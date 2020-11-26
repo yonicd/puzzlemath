@@ -14,7 +14,8 @@ app_ui <- function(request) {
       # Sidebar with a slider input for number of bins 
       sidebarLayout(
         sidebarPanel(
-          actionButton('game','New Game'),
+          # click on draw when new game
+          actionButton('game','New Game', onclick  = "document.getElementById('draw').click()"),
           actionButton('draw','New Question'),
           checkboxGroupInput(
             inputId = 'signs',
