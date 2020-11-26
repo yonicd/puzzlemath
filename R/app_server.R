@@ -42,10 +42,19 @@ app_server <- function( input, output, session ) {
     plotServer("plot1",qp,input$arrows, input$mat_dim, input$ans)  
   })
 
-  # observeEvent(input$ans,{
-  #     if(!nzchar(input$ans)){
-  #         shinyjs::runjs("document.getElementById('anspanel').style.borderColor = 'grey'")
-  #     }
-  # })
+  observeEvent(input$ans,{
+    
+    col <- 'grey'
+    
+    if(nzchar(input$ans)){
+      if(as.numeric(input$ans)==qp()[['m']]){
+        col <- 'green'
+      }else{
+        col <- 'red'
+      } 
+    }
+    
+    shinyjs::runjs(glue::glue("document.getElementById('anspanel').style.borderColor = '{col}'"))
+  })
   
 }
