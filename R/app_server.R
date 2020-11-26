@@ -2,9 +2,50 @@
 #' 
 #' @param input,output,session Internal parameters for {shiny}. 
 #'     DO NOT REMOVE.
-#' @import shiny
 #' @noRd
+#' @import shiny
+#' @importFrom glue glue
 app_server <- function( input, output, session ) {
-  # List the first level callModules here
+  
+  shiny::observeEvent(c(input$range,input$mat_dim,input$game),{
+    
+    req(input$range)
+    req(input$mat_dim)
+    req(input$signs)
+    
+    this$df <- new_game(
+      n = input$range, 
+      mat_dim = input$mat_dim,
+      signs = input$signs
+    )
+    
+    this$counter <- c()
+    
+  }) 
+  
+  qp <- shiny::eventReactive(input$draw,{
+    this$df[sample(which(this$df$a==1),1),]
+  })    
+  
+  shiny::observeEvent(c(input$draw),{
+    tqp <- qp()
+    
+    output$ques <- shiny::renderText({ 
+      glue::glue('{as.character(tqp$v1)} {tqp$sign} {as.character(tqp$v2)} ?') })
+    
+    output$vals <- shiny::renderTable(tqp,rownames = TRUE)
+    
+    shiny::updateTextInput(session,'ans',value = '')
+  })
+  
+  observeEvent(c(input$game,input$draw,input$ans,input$arrows),{
+    plotServer("plot1",qp,input$arrows, input$mat_dim, input$ans)  
+  })
 
+  # observeEvent(input$ans,{
+  #     if(!nzchar(input$ans)){
+  #         shinyjs::runjs("document.getElementById('anspanel').style.borderColor = 'grey'")
+  #     }
+  # })
+  
 }

@@ -10,7 +10,51 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # List the first level UI elements here 
     fluidPage(
-      h1("puzzlemath")
+      shinyjs::useShinyjs(),
+      # Sidebar with a slider input for number of bins 
+      sidebarLayout(
+        sidebarPanel(
+          actionButton('game','New Game'),
+          actionButton('draw','New Question'),
+          checkboxGroupInput(
+            inputId = 'signs',
+            label = 'Choose Signs',
+            choices = c('+','-','*','/'),
+            selected = c('+','-','*','/'),
+            inline = TRUE
+          ),
+          sliderInput(inputId = 'range',
+                      label = 'Number Range',
+                      min = 1,max = 100,
+                      value = c(1,10)
+          ),
+          sliderInput(inputId = 'mat_dim',
+                      label = 'Game Dimensions',
+                      min = 1,max = 10,step = 1,
+                      value = 5
+          ),
+          checkboxInput(
+            inputId = 'arrows',
+            label = 'Show Arrows',
+            value = FALSE
+          ),
+          verbatimTextOutput('ques'),
+          wellPanel(
+            id = 'anspanel',
+            textInput(
+              inputId = 'ans',
+              label = NULL,
+              value = '',
+              placeholder = 'answer')
+          )
+        ),
+        
+        # Show a plot of the generated distribution
+        mainPanel(
+          #tableOutput('vals'),
+          plotUI("plot1")
+        )
+      )
     )
   )
 }
