@@ -22,17 +22,20 @@ plotUI <- function(id){
 #' @import ggplot2 
 #' @importFrom ggpubr background_image
 #' @importFrom grid arrow
-plotServer <- function(id, qp, arrows, mat_dim, ans){
+plotServer <- function(id, r){
   shiny::moduleServer(id,
     function(input, output, session){
 
       output$plot <- shiny::renderPlot({
         
         whereami::cat_where(whereami::whereami())
-
-        tqp <- qp()
         
-        dat <- plot_data(tqp,ans)
+        req(r$game)
+        req(this$qp)
+
+        tqp <- this$qp
+        
+        dat <- plot_data(tqp, r$ans)
         
         aa <- tqp$y
         bb <- tqp$x
@@ -51,7 +54,7 @@ plotServer <- function(id, qp, arrows, mat_dim, ans){
             p <- p + ggplot2::geom_raster(ggplot2::aes(alpha = a),show.legend = FALSE)
           }
           
-          if(arrows){
+          if(r$arrows){
             p <- p + 
               ggplot2::geom_segment(
                 x = aa, xend = aa, y = 0.5, yend = bb-0.25,
@@ -70,12 +73,12 @@ plotServer <- function(id, qp, arrows, mat_dim, ans){
         
         p + ggplot2::scale_x_continuous(
           expand = c(0,0),
-          breaks = seq(mat_dim),
+          breaks = seq(r$mat_dim),
           labels = attr(this$df,'v2')
         ) +
           ggplot2::scale_y_continuous(
             expand = c(0,0),
-            breaks = seq(mat_dim),
+            breaks = seq(r$mat_dim),
             labels = attr(this$df,'v1')
           ) + 
           ggplot2::theme(
