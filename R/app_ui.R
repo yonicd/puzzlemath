@@ -15,8 +15,6 @@ app_ui <- function(request) {
       sidebarLayout(
         sidebarPanel(
           # click on draw when new game
-          actionButton('game','New Game', onclick  = "document.getElementById('draw').click()"),
-          actionButton('draw','New Question'),
           checkboxGroupInput(
             inputId = 'signs',
             label = 'Choose Signs',
@@ -38,6 +36,14 @@ app_ui <- function(request) {
             inputId = 'arrows',
             label = 'Show Arrows',
             value = FALSE
+          ),
+          wellPanel(
+            actionButton(
+              inputId = 'game',
+              label = 'New Game',
+              onclick  = "document.getElementById('draw').click()"
+              ),
+            actionButton('draw','New Question'),
           ),
           verbatimTextOutput('ques'),
           wellPanel(

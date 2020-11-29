@@ -3,7 +3,7 @@
 #' @importFrom stats runif
 new_game <- function(n = c(2,50), mat_dim = 5,signs = c('+','-','*','/')){
   
-  this$img <- magick::image_read('https://picsum.photos/400')
+  this$img <- magick::image_read(sample(splash_links,1))
 
   r <- sample(n[1]:n[2],1000,replace = TRUE)
   

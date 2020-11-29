@@ -59,17 +59,36 @@ app_server <- function( input, output, session ) {
   observeEvent( input$arrows, {
     r$arrows <- input$arrows
   })
+
+  observeEvent( input$range, {
+    r$range <- input$range
+    shinyjs::click('game')
+  })
   
+  observeEvent( input$signs, {
+    shinyjs::click('game')
+  })
+    
   observeEvent( input$mat_dim, {
     r$mat_dim <- input$mat_dim
   })
   
   observeEvent( input$ans, {
     req(input$ans)
-    # Update the plot only if answer is correct
-    if(as.numeric(input$ans)==this$qp[['m']]){
-      r$ans <- input$ans
+    
+    num <- tryCatch(
+      as.numeric(input$ans),
+      error=function(e) e, 
+      warning=function(w) w
+      )
+    
+    if(inherits(num,what = 'numeric')){
+      # Update the plot only if answer is correct
+      if(num==this$qp[['m']]){
+        r$ans <- input$ans
+      }      
     }
+
   })
   
   # Pass r to the module
@@ -79,15 +98,28 @@ app_server <- function( input, output, session ) {
     
     col <- 'grey'
     
-    if(nzchar(input$ans)){
-      if(as.numeric(input$ans)==this$qp[['m']]){
-        col <- 'green'
-      }else{
-        col <- 'red'
-      } 
+    num <- tryCatch(
+      as.numeric(input$ans),
+      error=function(e) e, 
+      warning=function(w) w
+    )
+    
+    if(inherits(num,'numeric')){
+      if(nzchar(input$ans)){
+        if(as.numeric(input$ans)==this$qp[['m']]){
+          col <- 'green'
+        }else{
+          col <- 'red'
+        } 
+      }
+    
+    }else{
+      
+      col <- 'red'
+      
     }
     
     shinyjs::runjs(glue::glue("document.getElementById('anspanel').style.borderColor = '{col}'"))
-  })
-  
+    
+  })    
 }
