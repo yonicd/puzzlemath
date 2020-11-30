@@ -44,4 +44,4 @@ USER shiny_user
 
 #as.numeric(Sys.getenv('PORT'))
 # run app on container start (use heroku port variable for deployment)
-CMD ["R", "-e", "library('puzzlemath');options('http://shiny.host' = '127.0.0.1', 'shiny.port' = 3838L);puzzlemath::run_app()"]
+CMD ["R", "-e", "library('puzzlemath');options('shiny.host' = '0.0.0.0', 'shiny.port' = 3838L);puzzlemath::run_app()"]
