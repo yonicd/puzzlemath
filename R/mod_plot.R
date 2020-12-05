@@ -18,7 +18,7 @@ plotUI <- function(id){
 #'
 #' @noRd 
 #' @import shiny
-#' @importFrom whereami cat_where whereami
+#' @importFrom whereami whereami
 #' @import ggplot2 
 #' @importFrom ggpubr background_image
 #' @importFrom ggvoronoi geom_voronoi
@@ -29,11 +29,11 @@ plotServer <- function(id, r){
 
       output$plot <- shiny::renderPlot({
         
-        # whereami::cat_where(whereami::whereami())
+        whereami::whereami(tag = 'plot')
         
-        req(r$game)
-        req(r$n)
-        req(r$counter)
+        shiny::req(r$game)
+        shiny::req(r$n)
+        shiny::req(r$counter)
 
         dat <- this$df 
         
@@ -47,10 +47,10 @@ plotServer <- function(id, r){
           
           if(all(dat$a==1)){
             p <- p + ggvoronoi::geom_voronoi(
-              color = 'grey90',aes(fill = z),show.legend = FALSE)
+              color = 'grey90',ggplot2::aes(fill = z),show.legend = FALSE)
           }else{
             p <- p + ggvoronoi::geom_voronoi(
-              color = 'grey90',aes(fill = z,alpha = a),show.legend = FALSE)
+              color = 'grey90',ggplot2::aes(fill = z,alpha = a),show.legend = FALSE)
           }
    
           p <- p + viridis::scale_fill_viridis(option = 'B')
@@ -59,10 +59,10 @@ plotServer <- function(id, r){
         p + 
           ggplot2::scale_x_continuous(expand = c(0,0)) + 
           ggplot2::scale_y_continuous(expand = c(0,0)) + 
-          theme(
-            axis.text  = element_blank(),
-            axis.ticks = element_blank(),
-            axis.title = element_blank()
+          ggplot2::theme(
+            axis.text  = ggplot2::element_blank(),
+            axis.ticks = ggplot2::element_blank(),
+            axis.title = ggplot2::element_blank()
           )
         
       })  

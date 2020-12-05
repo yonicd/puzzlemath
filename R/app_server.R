@@ -10,9 +10,9 @@ app_server <- function( input, output, session ) {
   
   shiny::observeEvent(c(input$range,input$n,input$game,input$signs),{
     
-    req(input$range)
-    req(input$n)
-    req(input$signs)
+    shiny::req(input$range)
+    shiny::req(input$n)
+    shiny::req(input$signs)
     
     this$df <- new_game(
       rng = input$range, 
@@ -26,12 +26,12 @@ app_server <- function( input, output, session ) {
       shinyjs::show('draw')  
     }
     
-    output$tbl <- renderTable({
+    output$tbl <- shiny::renderTable({
       this$df
     },rownames = TRUE)
   }) 
   
-  observeEvent( input$draw , {
+  shiny::observeEvent( input$draw , {
 
     idx <- which(this$df$a==1)
     
@@ -57,7 +57,7 @@ app_server <- function( input, output, session ) {
   
   # Store everything as a reactiveValues 
   # that is passed to the module
-  r <- reactiveValues(
+  r <- shiny::reactiveValues(
     n = NULL,
     ans = "", 
     draw = NULL,
@@ -67,11 +67,11 @@ app_server <- function( input, output, session ) {
   )
   
   # Update the Values using the inputs
-  observeEvent( input$game, {
+  shiny::observeEvent( input$game, {
     r$game <- input$game
   })
   
-  observeEvent( input$draw, {
+  shiny::observeEvent( input$draw, {
     r$draw <- input$draw
   })
   
@@ -79,12 +79,12 @@ app_server <- function( input, output, session ) {
   #   r$pause <- (input$pause%%2)==1
   # })
   
-  observeEvent( input$range, {
+  shiny::observeEvent( input$range, {
     r$range <- input$range
     shinyjs::click('game')
   })
   
-  observeEvent( input$signs, {
+  shiny::observeEvent( input$signs, {
     
     defaults <- c('+','-','*','/')
     root <- "$(':button')[%s].className = 'btn checkbtn btn-%s active'"
@@ -102,13 +102,13 @@ app_server <- function( input, output, session ) {
     shinyjs::click('game')
   })
     
-  observeEvent( input$n, {
+  shiny::observeEvent( input$n, {
     r$n <- input$n
   })
   
-  observeEvent( input$ans, {
+  shiny::observeEvent( input$ans, {
     
-    req(input$ans)
+    shiny::req(input$ans)
     
     num <- tryCatch(
       as.numeric(input$ans),
@@ -130,12 +130,12 @@ app_server <- function( input, output, session ) {
       shiny::updateTextInput(session,'ans',value = '')
       shinyjs::hide('draw')
     }
-    output$tbl <- renderTable({
+    output$tbl <- shiny::renderTable({
       this$df
     },rownames = TRUE)
   })
   
-  observeEvent( input$ans, {
+  shiny::observeEvent( input$ans, {
     col <- 'grey'
 
     num <- tryCatch(

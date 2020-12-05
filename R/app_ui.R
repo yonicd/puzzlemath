@@ -7,15 +7,15 @@
 #' @importFrom shinyjs useShinyjs
 #' @noRd
 app_ui <- function(request) {
-  tagList(
+  shiny::tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # List the first level UI elements here 
-    fluidPage(
+    shiny::fluidPage(
       shinyjs::useShinyjs(),
       # Sidebar with a slider input for number of bins 
-      sidebarLayout(
-        sidebarPanel(
+      shiny::sidebarLayout(
+        shiny::sidebarPanel(
           shinyWidgets::checkboxGroupButtons(
             inputId = "signs", label = "Choose Signs",
             choices = c('+','-','*','/'),
@@ -25,25 +25,25 @@ app_ui <- function(request) {
             status = "primary",
             size = 'sm'
           ),
-          sliderInput(inputId = 'range', label = 'Number Range',
+          shiny::sliderInput(inputId = 'range', label = 'Number Range',
                       min = 1, max = 100, value = c(1,10)
           ),
-          sliderInput(inputId = 'n', label = 'Number of Questions',
+          shiny::sliderInput(inputId = 'n', label = 'Number of Questions',
                       min = 4, max = 100,step = 1, value = 25
           ),
-          wellPanel(
-            actionButton(
+          shiny::wellPanel(
+            shiny::actionButton(
               inputId = 'game',
               label = 'New Game',
               onclick  = "document.getElementById('draw').click()"
             ),
-            actionButton('draw','New Question')
+            shiny::actionButton('draw','New Question')
             # actionButton('pause','pause')
           ),
-          verbatimTextOutput('ques'),
-          wellPanel(
+          shiny::verbatimTextOutput('ques'),
+          shiny::wellPanel(
             id = 'anspanel',
-            textInput(
+            shiny::textInput(
               inputId = 'ans',
               label = NULL,
               value = '',
@@ -58,9 +58,9 @@ app_ui <- function(request) {
         #     tabPanel(title = 'data',tableOutput('tbl'))
         #   )
         # )
-        mainPanel(
-          h1('Puzzle Math!'),
-          tabPanel(title = 'puzzle',plotUI("plot1")),
+        shiny::mainPanel(
+          shiny::h1('Puzzle Math!'),
+          shiny::tabPanel(title = 'puzzle',plotUI("plot1")),
         )
       )
     )
@@ -77,13 +77,13 @@ app_ui <- function(request) {
 #' @noRd
 golem_add_external_resources <- function(){
   
-  add_resource_path(
+  golem::add_resource_path(
     'www', app_sys('app/www')
   )
  
   tags$head(
-    favicon(),
-    bundle_resources(
+    golem::favicon(),
+    golem::bundle_resources(
       path = app_sys('app/www'),
       app_title = 'puzzlemath'
     )

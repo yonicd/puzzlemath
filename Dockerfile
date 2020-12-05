@@ -7,7 +7,9 @@ LABEL author="Jonathan Sidi https://hub.docker.com/u/yonicd"
 # install debian packages
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     libxml2-dev \
-    libmagick++-dev
+    libmagick++-dev \
+    libgdal-dev \
+    libproj-dev
     #libcairo2-dev \
     #libpq-dev \
     #libssh2-1-dev \
@@ -28,7 +30,7 @@ RUN apt-get update && \
 #COPY /renv.lock ./renv.lock
 
 # install renv & restore packages
-RUN Rscript -e 'install.packages(c("remotes","shinyjs","magick"))'
+RUN Rscript -e 'install.packages(c("remotes"))'
 RUN Rscript -e 'remotes::install_github("yonicd/puzzlemath@voronoi")'
 
 # remove install files
@@ -44,6 +46,5 @@ EXPOSE 3838
 RUN useradd shiny_user
 USER shiny_user
 
-#as.numeric(Sys.getenv('PORT'))
 # run app on container start (use heroku port variable for deployment)
-CMD ["R", "-e", "library('puzzlemath');options('shiny.host' = '0.0.0.0', 'shiny.port' = 3838L);puzzlemath::run_app()"]
+CMD ["R", "-e", "library('puzzlemath');options('shiny.host' = '0.0.0.0', 'shiny.port' = as.numeric(Sys.getenv('PORT')));puzzlemath::run_app()"]
