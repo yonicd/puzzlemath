@@ -14,36 +14,29 @@ app_ui <- function(request) {
       # Sidebar with a slider input for number of bins 
       sidebarLayout(
         sidebarPanel(
-          # click on draw when new game
-          checkboxGroupInput(
-            inputId = 'signs',
-            label = 'Choose Signs',
+          shinyWidgets::checkboxGroupButtons(
+            inputId = "signs", label = "Choose Signs",
             choices = c('+','-','*','/'),
             selected = c('+','-','*','/'),
-            inline = TRUE
+            individual = TRUE,
+            justified = FALSE, 
+            status = "primary",
+            size = 'sm'
           ),
-          sliderInput(inputId = 'range',
-                      label = 'Number Range',
-                      min = 1,max = 100,
-                      value = c(1,10)
+          sliderInput(inputId = 'range', label = 'Number Range',
+                      min = 1, max = 100, value = c(1,10)
           ),
-          sliderInput(inputId = 'mat_dim',
-                      label = 'Game Dimensions',
-                      min = 1,max = 10,step = 1,
-                      value = 5
-          ),
-          checkboxInput(
-            inputId = 'arrows',
-            label = 'Show Arrows',
-            value = FALSE
+          sliderInput(inputId = 'n', label = 'Number of Questions',
+                      min = 4, max = 100,step = 1, value = 25
           ),
           wellPanel(
             actionButton(
               inputId = 'game',
               label = 'New Game',
               onclick  = "document.getElementById('draw').click()"
-              ),
-            actionButton('draw','New Question'),
+            ),
+            actionButton('draw','New Question')
+            # actionButton('pause','pause')
           ),
           verbatimTextOutput('ques'),
           wellPanel(
@@ -57,9 +50,15 @@ app_ui <- function(request) {
         ),
         
         # Show a plot of the generated distribution
+        # mainPanel(
+        #   tabsetPanel(
+        #     tabPanel(title = 'puzzle',plotUI("plot1")),
+        #     tabPanel(title = 'data',tableOutput('tbl'))
+        #   )
+        # )
         mainPanel(
-          #tableOutput('vals'),
-          plotUI("plot1")
+          h1('Puzzle Math!'),
+          tabPanel(title = 'puzzle',plotUI("plot1")),
         )
       )
     )

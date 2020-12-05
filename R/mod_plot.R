@@ -10,7 +10,7 @@
 plotUI <- function(id){
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::plotOutput(ns("plot"))
+    shiny::plotOutput(ns("plot"),height = 500)
   )
 }
     
@@ -28,62 +28,40 @@ plotServer <- function(id, r){
 
       output$plot <- shiny::renderPlot({
         
-        whereami::cat_where(whereami::whereami())
+        # whereami::cat_where(whereami::whereami())
         
         req(r$game)
-        req(this$qp)
+        req(r$n)
+        req(r$counter)
 
-        tqp <- this$qp
+        dat <- this$df 
         
-        dat <- plot_data(tqp, r$ans)
-        
-        aa <- tqp$y
-        bb <- tqp$x
-
         p <- ggplot2::ggplot(
           data = dat, 
-          ggplot2::aes(x = y, y = x, fill = z)
+          ggplot2::aes(xx, yy)
         ) + 
           ggpubr::background_image(this$img)
         
         if(any(dat$a==1)){
           
           if(all(dat$a==1)){
-            p <- p + ggplot2::geom_raster(show.legend = FALSE)
+            p <- p + geom_voronoi(
+              color = 'grey90',aes(fill = z),show.legend = FALSE)
           }else{
-            p <- p + ggplot2::geom_raster(ggplot2::aes(alpha = a),show.legend = FALSE)
+            p <- p + geom_voronoi(
+              color = 'grey90',aes(fill = z,alpha = a),show.legend = FALSE)
           }
-          
-          if(r$arrows){
-            p <- p + 
-              ggplot2::geom_segment(
-                x = aa, xend = aa, y = 0.5, yend = bb-0.25,
-                arrow = grid::arrow(),
-                colour = 'red',
-                size = 1) +
-              ggplot2::geom_segment(
-                x = 0.5, xend = aa-0.25, y = bb, yend = bb,
-                arrow = grid::arrow(),
-                colour = 'red',
-                size = 1)
-          }
-          
-          p <- p + ggplot2::scale_fill_viridis_b()
+   
+          p <- p + viridis::scale_fill_viridis(option = 'B')
         }  
         
-        p + ggplot2::scale_x_continuous(
-          expand = c(0,0),
-          breaks = seq(r$mat_dim),
-          labels = attr(this$df,'v2')
-        ) +
-          ggplot2::scale_y_continuous(
-            expand = c(0,0),
-            breaks = seq(r$mat_dim),
-            labels = attr(this$df,'v1')
-          ) + 
-          ggplot2::theme(
-            axis.text = ggplot2::element_text(size  = 20),
-            axis.title = ggplot2::element_blank()
+        p + 
+          ggplot2::scale_x_continuous(expand = c(0,0)) + 
+          ggplot2::scale_y_continuous(expand = c(0,0)) + 
+          theme(
+            axis.text  = element_blank(),
+            axis.ticks = element_blank(),
+            axis.title = element_blank()
           )
         
       })  

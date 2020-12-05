@@ -6,13 +6,15 @@ LABEL author="Jonathan Sidi https://hub.docker.com/u/yonicd"
 # system libraries of general use
 # install debian packages
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    libxml2-dev
+    libxml2-dev \
+    libmagick++-dev
     #libcairo2-dev \
     #libpq-dev \
     #libssh2-1-dev \
     #libcurl4-openssl-dev \
     #libssl-dev
 
+RUN ldconfig /usr/local/lib
 
 ## update system libraries
 RUN apt-get update && \
@@ -26,7 +28,7 @@ RUN apt-get update && \
 #COPY /renv.lock ./renv.lock
 
 # install renv & restore packages
-RUN Rscript -e 'install.packages(c("remotes","shinyjs"))'
+RUN Rscript -e 'install.packages(c("remotes","shinyjs","magick"))'
 RUN Rscript -e 'remotes::install_github("yonicd/puzzlemath")'
 
 # remove install files
