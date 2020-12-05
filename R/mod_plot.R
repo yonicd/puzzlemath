@@ -21,6 +21,7 @@ plotUI <- function(id){
 #' @importFrom whereami cat_where whereami
 #' @import ggplot2 
 #' @importFrom ggpubr background_image
+#' @importFrom ggvoronoi geom_voronoi
 #' @importFrom grid arrow
 plotServer <- function(id, r){
   shiny::moduleServer(id,
@@ -45,10 +46,10 @@ plotServer <- function(id, r){
         if(any(dat$a==1)){
           
           if(all(dat$a==1)){
-            p <- p + geom_voronoi(
+            p <- p + ggvoronoi::geom_voronoi(
               color = 'grey90',aes(fill = z),show.legend = FALSE)
           }else{
-            p <- p + geom_voronoi(
+            p <- p + ggvoronoi::geom_voronoi(
               color = 'grey90',aes(fill = z,alpha = a),show.legend = FALSE)
           }
    
