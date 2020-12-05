@@ -1,13 +1,13 @@
 Package: puzzlemath
 Title: Shiny App Math Game
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: person(given = "Jonathan", family = "Sidi",
        role = c("aut", "cre"), email = "your@email.com")
 Description: Math game in Shiny to learn basic arithmetic
 License: MIT + file LICENSE
 Imports: config, ggplot2, ggpubr, glue, grid, htmltools,
        magick, shiny, shinyjs, whereami, golem, stats,
-       processx
+       processx, shinyWidgets
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1

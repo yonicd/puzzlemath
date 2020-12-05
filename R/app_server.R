@@ -5,6 +5,7 @@
 #' @noRd
 #' @import shiny
 #' @importFrom glue glue
+#' @importFrom shinyjs runjs hide show
 app_server <- function( input, output, session ) {
   
   shiny::observeEvent(c(input$range,input$n,input$game,input$signs),{

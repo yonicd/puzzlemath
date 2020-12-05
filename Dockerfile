@@ -29,7 +29,7 @@ RUN apt-get update && \
 
 # install renv & restore packages
 RUN Rscript -e 'install.packages(c("remotes","shinyjs","magick"))'
-RUN Rscript -e 'remotes::install_github("yonicd/puzzlemath")'
+RUN Rscript -e 'remotes::install_github("yonicd/puzzlemath@voronoi")'
 
 # remove install files
 RUN rm -rf /var/lib/apt/lists/*
