@@ -17,5 +17,5 @@ jobs:
            usedocker: true
            docker_build_args: |
             GH_PAT
-           env:
-            GH_PAT: ${{ secrets.GH_TOKEN }}
+         env:
+           GH_PAT: ${{ secrets.GH_TOKEN }}
