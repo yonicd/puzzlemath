@@ -2,10 +2,15 @@ context("golem tests")
 
 library(golem)
 
-testdir <- file.path('/Users/yonis/projects/puzzlemath',
-                     'tests/testthat/testapp')
+if(isFALSE(as.logical(Sys.getenv("CI")))){
+  testdir <- file.path('/Users/yonis/projects/puzzlemath',
+                       'tests/testthat/testapp')
+  
+}else{
+  testdir <- file.path(getwd(),'testthat/testapp')
+}
 
-dir.create(testdir,showWarnings = FALSE)
+dir.create(testdir,showWarnings = FALSE)  
 
 test_that("app ui", {
   ui <- app_ui()
