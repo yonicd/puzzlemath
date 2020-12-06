@@ -7,6 +7,7 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![R-CMD-check](https://github.com/yonicd/puzzlemath/workflows/R-CMD-check/badge.svg)](https://github.com/yonicd/puzzlemath/actions)
 <!-- badges: end -->
 
 The goal of puzzlemath is to teach basic math at elementary school level

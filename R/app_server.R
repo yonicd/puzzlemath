@@ -137,6 +137,7 @@ app_server <- function( input, output, session ) {
   
   shiny::observeEvent( input$ans, {
     col <- 'grey'
+    width <- 1
 
     num <- tryCatch(
       as.numeric(input$ans),
@@ -148,20 +149,22 @@ app_server <- function( input, output, session ) {
       if(nzchar(input$ans)){
         if(as.numeric(input$ans)==this$qp[['m']]){
           col <- 'green'
+          width <- 2
         }else{
           col <- 'red'
+          width <- 4
         } 
       }
     
     }else{
       
       col <- 'red'
+      width <- 4
       
     }
     
     shinyjs::runjs(glue::glue("document.getElementById('anspanel').style.borderColor = '{col}'"))
-    
-    
+    shinyjs::runjs(glue::glue("document.getElementById('anspanel').style.borderWidth = '{width}px'"))
 
   })  
   

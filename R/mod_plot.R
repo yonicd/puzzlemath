@@ -20,9 +20,8 @@ plotUI <- function(id){
 #' @import shiny
 #' @importFrom whereami whereami
 #' @import ggplot2 
-#' @importFrom ggpubr background_image
 #' @importFrom ggvoronoi geom_voronoi
-#' @importFrom grid arrow
+#' @importFrom rlang sym
 plotServer <- function(id, r){
   shiny::moduleServer(id,
     function(input, output, session){
@@ -39,18 +38,18 @@ plotServer <- function(id, r){
         
         p <- ggplot2::ggplot(
           data = dat, 
-          ggplot2::aes(xx, yy)
+          ggplot2::aes(!!rlang::sym('xx'), !!rlang::sym('yy'))
         ) + 
-          ggpubr::background_image(this$img)
+          ggplot2::annotation_raster(this$img,xmin = -Inf, xmax = Inf,ymin = -Inf, ymax = Inf)
         
         if(any(dat$a==1)){
           
           if(all(dat$a==1)){
             p <- p + ggvoronoi::geom_voronoi(
-              color = 'grey90',ggplot2::aes(fill = z),show.legend = FALSE)
+              color = 'grey90',ggplot2::aes(fill = !!rlang::sym('z')),show.legend = FALSE)
           }else{
             p <- p + ggvoronoi::geom_voronoi(
-              color = 'grey90',ggplot2::aes(fill = z,alpha = a),show.legend = FALSE)
+              color = 'grey90',ggplot2::aes(fill = !!rlang::sym('z'),alpha = a),show.legend = FALSE)
           }
    
           p <- p + viridis::scale_fill_viridis(option = 'B')
