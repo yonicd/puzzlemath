@@ -1,20 +1,20 @@
 name: heroku_deploy
-on:                       
-    push:                           
-        branches:
-            - master
-            - main
+on: 
+  push:                           
+    branches:
+      - master
+      - main
 jobs:                        
-    build:                          
+  build:                          
     runs-on: ubuntu-latest                        
-       steps:
-           - uses: actions/checkout@v2        
-           - uses: akhileshns/heroku-deploy@v3.6.8
-           with: 
-               heroku_api_key: ${{secrets.HEROKU_API_KEY}}  
-               heroku_app_name: "puzzlemath"
-               heroku_email: ${{secrets.HEROKU_EMAIL}}                                   
-               healthcheck: "https://puzzlemath.herokuapp.com/"                                     
-               usedocker: true                                  
-               delay: 60                                 
-               rollbackonhealthcheckfailed: true
+    steps:
+       - uses: actions/checkout@v2        
+       - uses: akhileshns/heroku-deploy@v3.6.8
+         with:
+           heroku_api_key: ${{secrets.HEROKU_API_KEY}}  
+           heroku_app_name: "puzzlemath"
+           heroku_email: ${{secrets.HEROKU_EMAIL}}                                   
+           healthcheck: "https://puzzlemath.herokuapp.com/"                                     
+           usedocker: true                                  
+           delay: 60                                 
+           rollbackonhealthcheckfailed: true
