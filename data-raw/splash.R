@@ -2,7 +2,7 @@
 
 root <- 'https://api.unsplash.com/'
 search_path <- 'search/photos'
-query <- 'disney'
+query <- 'cartoon'
 splash_key <- sprintf("Client-ID %s",keyring::key_get('unspash'))
 
 ret_first <- httr::GET(
@@ -25,12 +25,14 @@ ret_pages <- purrr::map(seq(2,min(10,pages)),
 
 results <- append(list(ret_first),ret_pages)
 
-splash_links <- purrr::flatten_chr(purrr::map(results,function(x){
+splash_links_new <- purrr::flatten_chr(purrr::map(results,function(x){
   purrr::map_chr(httr::content(x)$results,function(xx){
     xx$urls$small
   })
 }))
 
-slickR::slickR(puzzlemath::splash_links,height = 200)
+slickR::slickR(splash_links_new,height = 200)
 
-usethis::use_data(splash_links, overwrite = TRUE)
+splash_links <- c(splash_links,splash_links_new)
+
+usethis::use_data(splash_links, overwrite = TRUE,internal = TRUE)

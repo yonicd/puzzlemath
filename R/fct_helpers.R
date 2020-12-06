@@ -1,43 +1,37 @@
 #' @importFrom magick image_read
 #' @importFrom glue glue
 #' @importFrom stats runif
-new_game <- function(n = c(2,50), mat_dim = 5,signs = c('+','-','*','/')){
+new_game <- function(rng = c(2,50), n = 25,signs = c('+','-','*','/')){
   
   this$img <- magick::image_read(sample(splash_links,1))
 
-  r <- sample(n[1]:n[2],1000,replace = TRUE)
+  r <- sample(rng[1]:rng[2],1000,replace = TRUE)
   
-  mat <- t(apply(matrix(r,ncol = 2, byrow = FALSE),1,sort,decreasing = TRUE))
+  df <- r2df(r,n)
   
-  mat <- mat[apply(mat,1,function(x) x[1]!=x[2]),]
+  ndf <- nrow(df)
   
-  sub_mat <- mat[sample(1:nrow(mat),mat_dim),]
+  df$a <- 1
+  df$z <- stats::runif(ndf)
   
-  v1 <- sub_mat[,1]
-  v2 <- sub_mat[,2]
+  v <- sample(1:2000,ndf*2,replace = FALSE)
   
-  df <- expand.grid(x = 1:mat_dim,y = 1:mat_dim)
-  df$v1 <- factor(df$x,labels = v1)
-  df$v2 <- factor(df$y,labels = v2)
-  df$z <- stats::runif(nrow(df))
+  df$xx <- v[1:ndf]
+  df$yy <- v[(ndf+1):(2*ndf)]
+  
   sub_signs <- intersect(signs,c('+','-','*'))
-  df$sign <- sample(sub_signs,nrow(df),replace = TRUE)
+  df$sign <- sample(sub_signs,ndf,replace = TRUE)
   
   if('/'%in%signs){
-    df$sign[as.numeric(as.character(df$v1))%%as.numeric(as.character(df$v2))==0] <- '/'        
+    df$sign[df$x%%df$y==0] <- '/'        
   }
-  
   
   for(i in 1:nrow(df)){
-    df$m[i] <- eval(parse(text = glue::glue('{as.character(df$v1[i])} {df$sign[i]} {as.character(df$v2[i])}')))        
+    df$m[i] <- eval(
+      parse(text = glue::glue('{df$x[i]} {df$sign[i]} {df$y[i]}'))
+      )
   }
-  
-  df$a <- rep(1,nrow(df))
-  
-  
-  attr(df,'v1') <- v1
-  attr(df,'v2') <- v2
-  
+
   df
 }
 
@@ -55,13 +49,20 @@ plot_data <- function(tqp, ans){
       
       this$counter <- unique(c(this$counter,idx))
       
-      # shinyjs::runjs("document.getElementById('anspanel').style.borderColor = 'green'")
-      
       this$df$a[this$counter] <- 0   
     }
   }
   
   this$df
+}
+
+r2df <- function(r,n){
+  mat <- matrix(r,ncol = 2, byrow = FALSE)
+  mat <- apply(mat,1,sort,decreasing = TRUE)
+  mat <- t(mat)
+  mat <- mat[apply(mat,1,function(x) x[1]!=x[2]),]    
+  mat <- mat[sample(1:nrow(mat),round(sqrt(n))),]
+  expand.grid(x = mat[,1],y = mat[,2])
 }
 
 this <- new.env()

@@ -10,7 +10,7 @@
 plotUI <- function(id){
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::plotOutput(ns("plot"))
+    shiny::plotOutput(ns("plot"),height = 500)
   )
 }
     
@@ -18,71 +18,49 @@ plotUI <- function(id){
 #'
 #' @noRd 
 #' @import shiny
-#' @importFrom whereami cat_where whereami
+#' @importFrom whereami whereami
 #' @import ggplot2 
-#' @importFrom ggpubr background_image
-#' @importFrom grid arrow
+#' @importFrom ggvoronoi geom_voronoi
+#' @importFrom rlang sym
 plotServer <- function(id, r){
   shiny::moduleServer(id,
     function(input, output, session){
 
       output$plot <- shiny::renderPlot({
         
-        whereami::cat_where(whereami::whereami())
+        whereami::whereami(tag = 'plot')
         
-        req(r$game)
-        req(this$qp)
+        shiny::req(r$game)
+        shiny::req(r$n)
+        shiny::req(r$counter)
 
-        tqp <- this$qp
+        dat <- this$df 
         
-        dat <- plot_data(tqp, r$ans)
-        
-        aa <- tqp$y
-        bb <- tqp$x
-
         p <- ggplot2::ggplot(
           data = dat, 
-          ggplot2::aes(x = y, y = x, fill = z)
+          ggplot2::aes(!!rlang::sym('xx'), !!rlang::sym('yy'))
         ) + 
-          ggpubr::background_image(this$img)
+          ggplot2::annotation_raster(this$img,xmin = -Inf, xmax = Inf,ymin = -Inf, ymax = Inf)
         
         if(any(dat$a==1)){
           
           if(all(dat$a==1)){
-            p <- p + ggplot2::geom_raster(show.legend = FALSE)
+            p <- p + ggvoronoi::geom_voronoi(
+              color = 'grey90',ggplot2::aes(fill = !!rlang::sym('z')),show.legend = FALSE)
           }else{
-            p <- p + ggplot2::geom_raster(ggplot2::aes(alpha = a),show.legend = FALSE)
+            p <- p + ggvoronoi::geom_voronoi(
+              color = 'grey90',ggplot2::aes(fill = !!rlang::sym('z'),alpha = a),show.legend = FALSE)
           }
-          
-          if(r$arrows){
-            p <- p + 
-              ggplot2::geom_segment(
-                x = aa, xend = aa, y = 0.5, yend = bb-0.25,
-                arrow = grid::arrow(),
-                colour = 'red',
-                size = 1) +
-              ggplot2::geom_segment(
-                x = 0.5, xend = aa-0.25, y = bb, yend = bb,
-                arrow = grid::arrow(),
-                colour = 'red',
-                size = 1)
-          }
-          
-          p <- p + ggplot2::scale_fill_viridis_b()
+   
+          p <- p + viridis::scale_fill_viridis(option = 'B')
         }  
         
-        p + ggplot2::scale_x_continuous(
-          expand = c(0,0),
-          breaks = seq(r$mat_dim),
-          labels = attr(this$df,'v2')
-        ) +
-          ggplot2::scale_y_continuous(
-            expand = c(0,0),
-            breaks = seq(r$mat_dim),
-            labels = attr(this$df,'v1')
-          ) + 
+        p + 
+          ggplot2::scale_x_continuous(expand = c(0,0)) + 
+          ggplot2::scale_y_continuous(expand = c(0,0)) + 
           ggplot2::theme(
-            axis.text = ggplot2::element_text(size  = 20),
+            axis.text  = ggplot2::element_blank(),
+            axis.ticks = ggplot2::element_blank(),
             axis.title = ggplot2::element_blank()
           )
         

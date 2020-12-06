@@ -3,52 +3,47 @@
 #' @param request Internal parameter for `{shiny}`. 
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @importFrom shinyWidgets checkboxGroupButtons
+#' @importFrom shinyjs useShinyjs
 #' @noRd
 app_ui <- function(request) {
-  tagList(
+  shiny::tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # List the first level UI elements here 
-    fluidPage(
+    shiny::fluidPage(
       shinyjs::useShinyjs(),
       # Sidebar with a slider input for number of bins 
-      sidebarLayout(
-        sidebarPanel(
-          # click on draw when new game
-          checkboxGroupInput(
-            inputId = 'signs',
-            label = 'Choose Signs',
+      shiny::sidebarLayout(
+        shiny::sidebarPanel(
+          shinyWidgets::checkboxGroupButtons(
+            inputId = "signs", label = "Choose Signs",
             choices = c('+','-','*','/'),
             selected = c('+','-','*','/'),
-            inline = TRUE
+            individual = TRUE,
+            justified = FALSE, 
+            status = "primary",
+            size = 'sm'
           ),
-          sliderInput(inputId = 'range',
-                      label = 'Number Range',
-                      min = 1,max = 100,
-                      value = c(1,10)
+          shiny::sliderInput(inputId = 'range', label = 'Number Range',
+                      min = 1, max = 100, value = c(1,10)
           ),
-          sliderInput(inputId = 'mat_dim',
-                      label = 'Game Dimensions',
-                      min = 1,max = 10,step = 1,
-                      value = 5
+          shiny::sliderInput(inputId = 'n', label = 'Number of Questions',
+                      min = 4, max = 100,step = 1, value = 25
           ),
-          checkboxInput(
-            inputId = 'arrows',
-            label = 'Show Arrows',
-            value = FALSE
-          ),
-          wellPanel(
-            actionButton(
+          shiny::wellPanel(
+            shiny::actionButton(
               inputId = 'game',
               label = 'New Game',
               onclick  = "document.getElementById('draw').click()"
-              ),
-            actionButton('draw','New Question'),
+            ),
+            shiny::actionButton('draw','New Question')
+            # actionButton('pause','pause')
           ),
-          verbatimTextOutput('ques'),
-          wellPanel(
+          shiny::verbatimTextOutput('ques'),
+          shiny::wellPanel(
             id = 'anspanel',
-            textInput(
+            shiny::textInput(
               inputId = 'ans',
               label = NULL,
               value = '',
@@ -57,9 +52,15 @@ app_ui <- function(request) {
         ),
         
         # Show a plot of the generated distribution
-        mainPanel(
-          #tableOutput('vals'),
-          plotUI("plot1")
+        # mainPanel(
+        #   tabsetPanel(
+        #     tabPanel(title = 'puzzle',plotUI("plot1")),
+        #     tabPanel(title = 'data',tableOutput('tbl'))
+        #   )
+        # )
+        shiny::mainPanel(
+          shiny::h1('Puzzle Math!'),
+          shiny::tabPanel(title = 'puzzle',plotUI("plot1")),
         )
       )
     )
@@ -76,13 +77,13 @@ app_ui <- function(request) {
 #' @noRd
 golem_add_external_resources <- function(){
   
-  add_resource_path(
+  golem::add_resource_path(
     'www', app_sys('app/www')
   )
  
   tags$head(
-    favicon(),
-    bundle_resources(
+    golem::favicon(),
+    golem::bundle_resources(
       path = app_sys('app/www'),
       app_title = 'puzzlemath'
     )
