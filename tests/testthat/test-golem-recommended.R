@@ -7,7 +7,7 @@ if(isFALSE(as.logical(Sys.getenv("CI")))){
                        'tests/testthat/testapp')
   
 }else{
-  testdir <- file.path(getwd(),'testthat/testapp')
+  testdir <- file.path(getwd(),'testapp')
 }
 
 dir.create(testdir,showWarnings = FALSE)  
