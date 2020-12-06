@@ -26,8 +26,10 @@ test_that(
     
     test_pkg_name <- tools::file_path_sans_ext(basename(test_pkg_stem))
     
+    cat(normalizePath(Sys.getenv("R_HOME")),file = file.path(testdir,'path.txt'))
+    
     x <- processx::process$new(
-      command = file.path(Sys.getenv('R_HOME'),'bin/R'), 
+      command = normalizePath(file.path(Sys.getenv("R_HOME"),'R')), 
       c(
         "-e", 
         sprintf("library(%s);run_app()",test_pkg_name)
