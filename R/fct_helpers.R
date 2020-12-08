@@ -5,22 +5,12 @@ new_game <- function(rng = c(2,50), n = 25,signs = c('+','-','*','/')){
   
   this$img <- magick::image_read(sample(splash_links,1))
 
-  r <- sample(rng[1]:rng[2],1000,replace = TRUE)
+  r <- sample(rng[1]:rng[2],2000,replace = TRUE)
   
   df <- r2df(r,n)
   
-  ndf <- nrow(df)
-  
-  df$a <- 1
-  df$z <- stats::runif(ndf)
-  
-  v <- sample(1:2000,ndf*2,replace = FALSE)
-  
-  df$xx <- v[1:ndf]
-  df$yy <- v[(ndf+1):(2*ndf)]
-  
   sub_signs <- intersect(signs,c('+','-','*'))
-  df$sign <- sample(sub_signs,ndf,replace = TRUE)
+  df$sign <- sample(sub_signs,n,replace = TRUE)
   
   if('/'%in%signs){
     df$sign[df$x%%df$y==0] <- '/'        
@@ -56,13 +46,26 @@ plot_data <- function(tqp, ans){
   this$df
 }
 
-r2df <- function(r,n){
+r2df <- function(r,nn){
+  
   mat <- matrix(r,ncol = 2, byrow = FALSE)
   mat <- apply(mat,1,sort,decreasing = TRUE)
   mat <- t(mat)
-  mat <- mat[apply(mat,1,function(x) x[1]!=x[2]),]    
-  mat <- mat[sample(1:nrow(mat),round(sqrt(n))),]
-  expand.grid(x = mat[,1],y = mat[,2])
+  mat <- unique(mat[apply(mat,1,function(x) x[1]!=x[2]),])
+  nn <- min(nn,nrow(mat))
+  mat <- mat[sample(1:nrow(mat),nn),]
+  mat_df <- as.data.frame(mat)
+  names(mat_df) <- c('x','y')
+  mat_df$row_id <- 1:nn
+  mat_df$a <- 1
+  mat_df$z <- stats::runif(nn)
+  
+  v <- sample(1:2000,2*nn,replace = FALSE)
+  
+  mat_df$xx <- v[1:nn]
+  mat_df$yy <- v[(nn+1):(2*nn)]
+  
+  mat_df
 }
 
 this <- new.env()

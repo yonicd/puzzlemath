@@ -12,6 +12,7 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # List the first level UI elements here 
     shiny::fluidPage(
+      shiny::tags$style(shiny::HTML(css)),
       shinyjs::useShinyjs(),
       # Sidebar with a slider input for number of bins 
       shiny::sidebarLayout(
@@ -22,14 +23,14 @@ app_ui <- function(request) {
             selected = c('+','-','*','/'),
             individual = TRUE,
             justified = FALSE, 
-            status = "primary",
+            status = "custom-status",
             size = 'sm'
           ),
           shiny::sliderInput(inputId = 'range', label = 'Number Range',
                       min = 1, max = 100, value = c(1,10)
           ),
           shiny::sliderInput(inputId = 'n', label = 'Number of Questions',
-                      min = 4, max = 100,step = 1, value = 25
+                      min = 4, max = 50,step = 1, value = 25
           ),
           shiny::wellPanel(
             shiny::actionButton(
@@ -52,16 +53,16 @@ app_ui <- function(request) {
         ),
         
         # Show a plot of the generated distribution
-        # mainPanel(
-        #   tabsetPanel(
-        #     tabPanel(title = 'puzzle',plotUI("plot1")),
-        #     tabPanel(title = 'data',tableOutput('tbl'))
-        #   )
-        # )
-        shiny::mainPanel(
-          shiny::h1('Puzzle Math!'),
-          shiny::tabPanel(title = 'puzzle',plotUI("plot1")),
+        mainPanel(
+          tabsetPanel(
+            tabPanel(title = 'puzzle',plotUI("plot1")),
+            tabPanel(title = 'data',tableOutput('tbl'))
+          )
         )
+        # shiny::mainPanel(
+        #   shiny::h1('Puzzle Math!'),
+        #   shiny::tabPanel(title = 'puzzle',plotUI("plot1")),
+        # )
       )
     )
   )

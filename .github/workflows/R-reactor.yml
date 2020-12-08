@@ -1,0 +1,53 @@
+on: [push]
+
+name: Reactor
+  
+jobs:
+  check:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    if: "contains(github.event.head_commit.message, 'deploy reactor')"    
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - { os: macOS-latest, r: '3.6', args: "--no-manual"}
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      CRAN: ${{ matrix.config.cran }}
+      GITHUB_PAT: ${{ secrets.GH_PAT }}
+
+    steps:
+      - uses: actions/checkout@master
+
+      - uses: r-lib/actions/setup-pandoc@master
+
+      - uses: r-lib/actions/setup-r@master
+        with:
+          r-version: ${{ matrix.config.r }}
+
+      - name: Install Gecko
+        run: |
+         brew install geckodriver
+         geckodriver --version
+
+      - name: Cache R packages
+        uses: actions/cache@v1
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-r-${{ matrix.config.r }}-2
+
+      - name: Install dependencies
+        run: |
+          install.packages('remotes')
+          remotes::install_deps(dependencies = TRUE)
+          remotes::install_github('yonicd/reactor')
+        shell: Rscript {0}
+
+      - name: Run Reactor
+        run: |
+          reactor::test_app()
+        shell: Rscript {0}
+        

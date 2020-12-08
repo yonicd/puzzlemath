@@ -23,7 +23,7 @@ app_server <- function( input, output, session ) {
     this$counter <- 1
     
     if(any(this$df$a==1)){
-      shinyjs::show('draw')  
+      shinyjs::show('draw')
     }
     
     output$tbl <- shiny::renderTable({
@@ -32,7 +32,7 @@ app_server <- function( input, output, session ) {
   }) 
   
   shiny::observeEvent( input$draw , {
-
+    whereami::cat_where(whereami::whereami(tag = 'draw'))
     idx <- which(this$df$a==1)
     
     if(length(idx)==1){
@@ -42,17 +42,15 @@ app_server <- function( input, output, session ) {
     }
 
     this$qp <- this$df[s,]
-  })
-  
-  shiny::observeEvent(c(input$draw),{
-    tqp <- this$qp
     
     output$ques <- shiny::renderText({ 
-      glue::glue('{tqp$x} {tqp$sign} {tqp$y} ?') })
+      glue::glue('{this$qp$x} {this$qp$sign} {this$qp$y} ?') })
     
-    output$vals <- shiny::renderTable(tqp,rownames = TRUE)
+    output$vals <- shiny::renderTable(this$qp,rownames = TRUE)
     
     shiny::updateTextInput(session,'ans',value = '')
+    
+    r$draw <- input$draw
   })
   
   # Store everything as a reactiveValues 
@@ -71,38 +69,23 @@ app_server <- function( input, output, session ) {
     r$game <- input$game
   })
   
-  shiny::observeEvent( input$draw, {
-    r$draw <- input$draw
-  })
-  
   # observeEvent( input$pause, {
   #   r$pause <- (input$pause%%2)==1
   # })
   
   shiny::observeEvent( input$range, {
     r$range <- input$range
+    r$counter <- r$counter + 1
     shinyjs::click('game')
   })
   
   shiny::observeEvent( input$signs, {
-    
-    defaults <- c('+','-','*','/')
-    root <- "$(':button')[%s].className = 'btn checkbtn btn-%s active'"
-    
-    for(i in 1:length(defaults)){
-
-      if(defaults[i]%in%input$signs){
-        shiny_call <- sprintf(root,i-1,'primary')
-      }else{
-        shiny_call <- sprintf(root,i-1,'danger')
-      }
-      shinyjs::runjs(shiny_call)
-    }
-    
+    r$counter <- r$counter + 1
     shinyjs::click('game')
   })
     
   shiny::observeEvent( input$n, {
+    r$counter <- r$counter + 1
     r$n <- input$n
   })
   
@@ -121,7 +104,7 @@ app_server <- function( input, output, session ) {
       if(num==this$qp[['m']]){
         r$ans <- input$ans
         
-        this$df$a[as.numeric(rownames(this$qp))] <- 0
+        this$df$a[this$qp$row_id] <- 0
         r$counter <- r$counter + 1
       }      
     }

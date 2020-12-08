@@ -1,3 +1,20 @@
+css <- ".btn-custom-status {
+  background-color: #fff;
+  color: firebrick;
+  border-color: firebrick;
+}
+
+.btn-custom-status:hover {
+  color: #fff;
+  background-color: firebrick;
+}
+
+.btn-custom-status.active {
+  color: #fff;
+  background-color: firebrick;
+  border-color: firebrick;
+}"
+
 #' Turn an R list into an HTML list
 #'
 #' @param list An R list

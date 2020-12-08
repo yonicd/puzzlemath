@@ -28,10 +28,8 @@ plotServer <- function(id, r){
 
       output$plot <- shiny::renderPlot({
         
-        whereami::whereami(tag = 'plot')
+        whereami::cat_where(whereami::whereami(tag = 'plot'))
         
-        shiny::req(r$game)
-        shiny::req(r$n)
         shiny::req(r$counter)
 
         dat <- this$df 
@@ -40,16 +38,24 @@ plotServer <- function(id, r){
           data = dat, 
           ggplot2::aes(!!rlang::sym('xx'), !!rlang::sym('yy'))
         ) + 
-          ggplot2::annotation_raster(this$img,xmin = -Inf, xmax = Inf,ymin = -Inf, ymax = Inf)
+          ggplot2::annotation_raster(
+            this$img,
+            xmin = -Inf, xmax = Inf,ymin = -Inf, ymax = Inf
+          )
         
         if(any(dat$a==1)){
           
           if(all(dat$a==1)){
             p <- p + ggvoronoi::geom_voronoi(
-              color = 'grey90',ggplot2::aes(fill = !!rlang::sym('z')),show.legend = FALSE)
+              color = 'grey90',
+              ggplot2::aes(fill = !!rlang::sym('z')),
+              show.legend = FALSE)
           }else{
             p <- p + ggvoronoi::geom_voronoi(
-              color = 'grey90',ggplot2::aes(fill = !!rlang::sym('z'),alpha = a),show.legend = FALSE)
+              color = 'grey90',
+              ggplot2::aes(fill = !!rlang::sym('z'),
+                           alpha = a),
+              show.legend = FALSE)
           }
    
           p <- p + viridis::scale_fill_viridis(option = 'B')
