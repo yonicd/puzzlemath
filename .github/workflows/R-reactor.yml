@@ -48,6 +48,7 @@ jobs:
 
       - name: Run Reactor
         run: |
+          pkgload::load_all()
           reactor::test_app()
         shell: Rscript {0}
         

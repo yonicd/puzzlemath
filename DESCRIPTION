@@ -10,6 +10,6 @@ Imports: config, ggplot2, ggvoronoi, glue, golem, htmltools, magick,
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
-Suggests: testthat,processx,here,crrry,pagedown,reactor
+Suggests: testthat,processx,here,crrry,pagedown,reactor,pkgload
 Remotes: colinfay/crrry,yonicd/reactor
 Depends: R (>= 3.6)
