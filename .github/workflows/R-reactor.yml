@@ -28,11 +28,6 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
 
-      - name: Install Gecko
-        run: |
-         brew install geckodriver
-         geckodriver --version
-
       - name: Cache R packages
         uses: actions/cache@v1
         with:
@@ -42,15 +37,14 @@ jobs:
       - name: Install dependencies
         run: |
           install.packages('remotes')
-          remotes::install_github('yonicd/whereami') 
+          remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v2
+      - name: Install package
+        run: R CMD INSTALL .
 
-      #- name: Run Reactor
-      #  run: |
-      #    pkgload::load_all()
-      #    reactor::test_app()
-      #  shell: Rscript {0}
+      - name: Run Reactor
+       run: |
+         reactor::test_app()
+       shell: Rscript {0}
         
