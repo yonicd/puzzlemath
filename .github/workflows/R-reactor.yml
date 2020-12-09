@@ -44,7 +44,7 @@ jobs:
         run: R CMD INSTALL .
 
       - name: Run Reactor
-       run: |
+        run: |
          reactor::test_app()
-       shell: Rscript {0}
+        shell: Rscript {0}
         
