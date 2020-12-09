@@ -42,7 +42,7 @@ jobs:
       - name: Install dependencies
         run: |
           install.packages('remotes')
-          remotes::install_github('yonicd/whereami')
+          remotes::install_github('yonicd/whereami') 
         shell: Rscript {0}
 
       - name: Setup tmate session
