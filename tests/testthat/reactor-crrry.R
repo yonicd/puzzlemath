@@ -1,8 +1,8 @@
-testthat::context("testing reactivity")
+testthat::context("testing startup reactivity")
 
 # We run a test with the expectation that the hist tag will be triggered once.
 
-driver_commands <- quote({
+driver_commands_startup <- quote({
   
   # wait for input$n element to be created
   el_game <- reactor::wait(
@@ -21,11 +21,22 @@ driver_commands <- quote({
   
 })
 
-testthat::describe('reactivity',{
+driver_commands_draw <- quote({
+
+  el_draw <- reactor::wait(
+    test_driver = test_driver,
+    expr = test_driver$client$findElement(using = 'id', value = 'draw')
+  )
+  
+  el_draw$clickElement()
+  
+})
+
+testthat::describe('startup',{
 
   click_counter <- reactor::test_reactor(
     test_port = 3456,
-    expr          = driver_commands,
+    expr          = driver_commands_startup,
     test_driver   = reactor::firefox_driver(),
     processx_args = c(
       reactor::runApp_args()[-4],
@@ -40,6 +51,25 @@ testthat::describe('reactivity',{
   
   it('reactivity first draw',{
     reactor::expect_reactivity(object = click_counter, tag = 'draw',count =  4)
+  })
+  
+})
+
+testthat::describe('draw',{
+  
+  click_counter <- reactor::test_reactor(
+    test_port = 3456,
+    expr          = driver_commands_draw,
+    test_driver   = reactor::firefox_driver(),
+    processx_args = c(
+      reactor::runApp_args()[-4],
+      glue::glue("options('shiny.port'= 3456,shiny.host='0.0.0.0')"),
+      'puzzlemath::run_app()'
+    )
+  )
+  
+  it('reactivity first draw',{
+    reactor::expect_reactivity(object = click_counter, tag = 'draw',count =  1)
   })
   
 })
