@@ -35,14 +35,9 @@ driver_commands_draw <- quote({
 testthat::describe('startup',{
 
   click_counter <- reactor::test_reactor(
-    test_port = 3456,
     expr          = driver_commands_startup,
     test_driver   = reactor::firefox_driver(),
-    processx_args = c(
-      reactor::runApp_args()[-4],
-      glue::glue("options('shiny.port'= 3456,shiny.host='0.0.0.0')"),
-      'puzzlemath::run_app()'
-    )
+    processx_args = reactor::golem_args()
   )
   
   it('reactivity at startup',{
@@ -58,14 +53,9 @@ testthat::describe('startup',{
 testthat::describe('draw',{
   
   click_counter <- reactor::test_reactor(
-    test_port = 3456,
     expr          = driver_commands_draw,
     test_driver   = reactor::firefox_driver(),
-    processx_args = c(
-      reactor::runApp_args()[-4],
-      glue::glue("options('shiny.port'= 3456,shiny.host='0.0.0.0')"),
-      'puzzlemath::run_app()'
-    )
+    processx_args = reactor::golem_args()
   )
   
   it('reactivity first draw',{
