@@ -69,7 +69,7 @@ testthat::describe('draw',{
   )
   
   it('reactivity first draw',{
-    reactor::expect_reactivity(object = click_counter, tag = 'draw',count =  1)
+    reactor::expect_reactivity(object = click_counter, tag = 'draw',count =  2)
   })
   
 })
