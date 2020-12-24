@@ -1,4 +1,4 @@
-testthat::context("testing startup reactivity")
+testthat::context("testing startup of chrome")
 
 testthat::describe('reactivity at startup',{
 
@@ -16,6 +16,12 @@ testthat::describe('reactivity at startup',{
     
   })
   
+})
+
+testthat::context("testing startup of firefox")
+
+testthat::describe('reactivity at startup',{
+
   it('firefox',{
     
     init_reactor()%>%
