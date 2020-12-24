@@ -1,65 +1,34 @@
 testthat::context("testing startup reactivity")
 
-# We run a test with the expectation that the hist tag will be triggered once.
+testthat::describe('reactivity at startup',{
 
-driver_commands_startup <- quote({
-  
-  # wait for input$n element to be created
-  el_game <- reactor::wait(
-    test_driver = test_driver,
-    expr = test_driver$client$findElement(using = 'id', value = 'game')
-  )
-  
-  el_game$clickElement()
-  
-  el_draw <- reactor::wait(
-    test_driver = test_driver,
-    expr = test_driver$client$findElement(using = 'id', value = 'draw')
-  )
-  
-  el_draw$clickElement()
-  
-})
-
-driver_commands_draw <- quote({
-
-  el_draw <- reactor::wait(
-    test_driver = test_driver,
-    expr = test_driver$client$findElement(using = 'id', value = 'draw')
-  )
-  
-  el_draw$clickElement()
-  
-})
-
-testthat::describe('startup',{
-
-  click_counter <- reactor::test_reactor(
-    expr          = driver_commands_startup,
-    test_driver   = reactor::firefox_driver(),
-    processx_args = reactor::golem_args()
-  )
-  
-  it('reactivity at startup',{
-    reactor::expect_reactivity(object = click_counter, tag = 'plot',count =  1)
+  it('chrome',{
+    
+    init_reactor()%>%
+      set_golem_args(package_name = 'puzzlemath')%>%
+      set_chrome_driver(
+        chromever = chrome_version()
+      )%>%
+      start_reactor()%>%
+      expect_reactivity('plot',1)%>%
+      expect_reactivity('draw',1)%>%
+      kill_app()
+    
   })
   
-  it('reactivity first draw',{
-    reactor::expect_reactivity(object = click_counter, tag = 'draw',count =  4)
+  it('firefox',{
+    
+    init_reactor()%>%
+      set_golem_args(package_name = 'puzzlemath')%>%
+      set_firefox_driver(
+        geckover = gecko_version()
+      )%>%
+      start_reactor()%>%
+      expect_reactivity('plot',1)%>%
+      expect_reactivity('draw',1)%>%
+      kill_app()
+    
   })
   
 })
 
-testthat::describe('draw',{
-  
-  click_counter <- reactor::test_reactor(
-    expr          = driver_commands_draw,
-    test_driver   = reactor::firefox_driver(),
-    processx_args = reactor::golem_args()
-  )
-  
-  it('reactivity first draw',{
-    reactor::expect_reactivity(object = click_counter, tag = 'draw',count =  2)
-  })
-  
-})
