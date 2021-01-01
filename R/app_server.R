@@ -5,7 +5,6 @@
 #' @noRd
 #' @import shiny
 #' @importFrom glue glue
-#' @importFrom shinyjs runjs hide show
 app_server <- function( input, output, session ) {
   
   shiny::observeEvent(c(input$range,input$n,input$game,input$signs),{
@@ -23,7 +22,8 @@ app_server <- function( input, output, session ) {
     this$counter <- 1
     
     if(any(this$df$a==1)){
-      shinyjs::show('draw')
+      # shinyjs::show('draw')
+      session$sendCustomMessage('showid','draw')
     }
     
     output$tbl <- shiny::renderTable({
@@ -76,12 +76,14 @@ app_server <- function( input, output, session ) {
   shiny::observeEvent( input$range, {
     r$range <- input$range
     r$counter <- r$counter + 1
-    shinyjs::click('game')
+    session$sendCustomMessage('clickon','#game')
+    #shinyjs::click('game')
   })
   
   shiny::observeEvent( input$signs, {
     r$counter <- r$counter + 1
-    shinyjs::click('game')
+    session$sendCustomMessage('clickon','#game')
+    # shinyjs::click('game')
   })
     
   shiny::observeEvent( input$n, {
@@ -111,7 +113,8 @@ app_server <- function( input, output, session ) {
 
     if(all(this$df$a==0)){
       shiny::updateTextInput(session,'ans',value = '')
-      shinyjs::hide('draw')
+      # shinyjs::hide('draw')
+      session$sendCustomMessage('hideid','draw')
     }
     output$tbl <- shiny::renderTable({
       this$df
@@ -146,8 +149,12 @@ app_server <- function( input, output, session ) {
       
     }
     
-    shinyjs::runjs(glue::glue("document.getElementById('anspanel').style.borderColor = '{col}'"))
-    shinyjs::runjs(glue::glue("document.getElementById('anspanel').style.borderWidth = '{width}px'"))
+    session$sendCustomMessage('eval',glue::glue("document.getElementById('anspanel').style.borderColor = '{col}'"))
+    
+    session$sendCustomMessage('eval',glue::glue("document.getElementById('anspanel').style.borderWidth = '{width}px'"))
+    
+    # shinyjs::runjs(glue::glue("document.getElementById('anspanel').style.borderColor = '{col}'"))
+    # shinyjs::runjs(glue::glue("document.getElementById('anspanel').style.borderWidth = '{width}px'"))
 
   })  
   

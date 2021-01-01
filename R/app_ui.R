@@ -4,7 +4,6 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @importFrom shinyWidgets checkboxGroupButtons
-#' @importFrom shinyjs useShinyjs
 #' @noRd
 app_ui <- function(request) {
   shiny::tagList(
@@ -13,7 +12,10 @@ app_ui <- function(request) {
     # List the first level UI elements here 
     shiny::fluidPage(
       shiny::tags$style(shiny::HTML(css)),
-      shinyjs::useShinyjs(),
+      # shinyjs::useShinyjs(),
+      htmltools::includeScript(
+        system.file("app/www/script.js", package = "puzzlemath")
+      ),
       # Sidebar with a slider input for number of bins 
       shiny::sidebarLayout(
         shiny::sidebarPanel(
